@@ -25,6 +25,8 @@
   },
   "devDependencies": {
     "@annotorious/annotorious": "^3.0.11",
+    "@liveblocks/client": "^2.9.1",
+    "@liveblocks/yjs": "^2.9.1",
     "typescript": "^5.6.3",
     "vite": "^5.4.9",
     "vite-plugin-dts": "^4.2.4",
