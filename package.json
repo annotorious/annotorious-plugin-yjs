@@ -1,0 +1,33 @@
+{
+  "name": "@annotorious/plugin-yjs",
+  "version": "0.0.1",
+  "description": "YJS-backed storage for Annotorious.",
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "start": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/annotorious/annotorious-plugin-yjs.git"
+  },
+  "author": "Rainer Simon",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/annotorious/annotorious-plugin-yjs/issues"
+  },
+  "homepage": "https://github.com/annotorious/annotorious-plugin-yjs#readme",
+  "dependencies": {
+    "@annotorious/core": "^3.0.11",
+    "yjs": "^13.6.20"
+  },
+  "devDependencies": {
+    "@annotorious/annotorious": "^3.0.11",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.9",
+    "vite-plugin-dts": "^4.2.4",
+    "y-localstorage": "^0.1.13"
+  }
+}
