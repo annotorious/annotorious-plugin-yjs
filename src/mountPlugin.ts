@@ -3,7 +3,7 @@ import { Origin, type Annotation, type Annotator } from '@annotorious/core';
 
 export const mountPlugin = (anno: Annotator) => {
 
-  const { store } = anno.state;
+  const { store, selection } = anno.state;
 
   const ydoc = new Y.Doc()
 
@@ -39,12 +39,36 @@ export const mountPlugin = (anno: Annotator) => {
     }
   }, { origin: Origin.LOCAL });
 
+  /*
+  anno.element.addEventListener('pointermove', (event: PointerEvent) => {
+    console.log(event);
+  });
+  */
+
   ymap.forEach((annotation, key) => {
     store.addAnnotation(annotation, Origin.REMOTE);
   });
 
+  const setProvider = (provider: any) => {
+    const { awareness } = provider;
+
+    const unsubscribe = selection.subscribe(({ selected }) => {
+      console.log('setting local state:', selected.map(s => s.id));
+      awareness.setLocalState({
+        user: 'rainer',
+        selected: selected.map(s => s.id)
+      });
+    });
+
+    awareness.on('change', event => {
+      const states = Array.from(awareness.getStates().entries());
+      console.log('awareness states:', states);
+    });
+  }
+
   return {
-    ydoc
+    ydoc,
+    setProvider
   }
 
 }

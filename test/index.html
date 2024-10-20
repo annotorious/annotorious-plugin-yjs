@@ -32,26 +32,27 @@
 
     <script type="module">
       import { createImageAnnotator } from '@annotorious/annotorious';
-      // import { WebsocketProvider } from 'y-websocket';
       import { createClient } from '@liveblocks/client';
       import { LiveblocksYjsProvider } from '@liveblocks/yjs';
+
       import { mountPlugin as mountYJSPlugin } from '../src';
+
+      const API_KEY = import.meta.env.VITE_LIVEBLOCKS_KEY;
 
       import '@annotorious/annotorious/annotorious.css';
 
       window.onload = function() {
+        console.log('API KEY', API_KEY);
+
         const anno = createImageAnnotator('sample-image');
 
-        const { ydoc } = mountYJSPlugin(anno);
+        const { ydoc, setProvider } = mountYJSPlugin(anno);
 
-        const client = createClient({
-          publicApiKey: "pk_prod_xxx",
-        });
+        const client = createClient({ publicApiKey: API_KEY });
 
         const { room, leave } = client.enterRoom("my-demo-room");
 
-        // var wsProvider = new WebsocketProvider('ws://localhost:1234', 'my-roomname', ydoc)
-        const provider = new LiveblocksYjsProvider(room, ydoc);
+        setProvider(new LiveblocksYjsProvider(room, ydoc));
       }
     </script>
   </body>
