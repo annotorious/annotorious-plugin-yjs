@@ -1,5 +1,12 @@
 import * as Y from 'yjs';
-import { Origin, type Annotation, type Annotator } from '@annotorious/core';
+import { Origin, type Annotation, type AnnotationState, type Annotator, type DrawingStyle, type DrawingStyleExpression } from '@annotorious/core';
+
+const COLORS = [
+  '#cf7fff', // purple
+  '#00d7bf', // mint
+  '#ffb800', // yellow
+  '#ff687e'  // red
+];
 
 export const mountPlugin = (anno: Annotator) => {
 
@@ -39,11 +46,6 @@ export const mountPlugin = (anno: Annotator) => {
     }
   }, { origin: Origin.LOCAL });
 
-  /*
-  anno.element.addEventListener('pointermove', (event: PointerEvent) => {
-    console.log(event);
-  });
-  */
 
   ymap.forEach((annotation, key) => {
     store.addAnnotation(annotation, Origin.REMOTE);
@@ -53,7 +55,6 @@ export const mountPlugin = (anno: Annotator) => {
     const { awareness } = provider;
 
     const unsubscribe = selection.subscribe(({ selected }) => {
-      console.log('setting local state:', selected.map(s => s.id));
       awareness.setLocalState({
         user: 'rainer',
         selected: selected.map(s => s.id)
@@ -62,7 +63,33 @@ export const mountPlugin = (anno: Annotator) => {
 
     awareness.on('change', event => {
       const states = Array.from(awareness.getStates().entries());
-      console.log('awareness states:', states);
+
+      const selections = Object.fromEntries(states.reduce<[string, string][]>((selections, [_, state]) => {
+        if ((state.selected || []).length > 0) {
+          return [ 
+            ...selections,
+            ...state.selected.map(id => ([id, state.user]))
+          ];
+        } else {
+          return selections;
+        }
+      }, []));
+
+      const style: DrawingStyleExpression = (a: Annotation, _?: AnnotationState) => a.id in selections ? {
+        fill: COLORS[2],
+        stroke: COLORS[2],
+        strokeWidth: 3
+      } as DrawingStyle : undefined;
+
+      anno.setStyle(style);
+
+      // TODO parse cursor positions
+    });
+
+    // @ts-ignore
+    anno.element.addEventListener('pointermove', (event: PointerEvent) => {
+      const { clientX, clientY } = event;
+      awareness.setLocalStateField('pointer', { x: clientX, y: clientY });
     });
   }
 
